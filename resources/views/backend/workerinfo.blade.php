@@ -1,0 +1,162 @@
+@extends('backend.master')
+
+@section('content')
+    <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">
+                           INDIVIDUAL WORKER INFORMATION
+                        </h1>
+                    </div>
+                </div>
+                <!-- /.row -->
+
+                   <div class="row">
+
+                    <div class="col-md-8">
+
+                    <div class="panel panel-default">
+					  <div class="panel-heading"></div>
+					  <div class="panel-body">
+						<h3>কার্ড নং: <b>{{ $workerinfo->cardnumber }}</b></h3>
+						<h3>নাম: <b>{{ $workerinfo->name }}</b></h3>
+                        <h4>পদবী: {{$workerinfo->designation}}</h4>
+                        <h4>জন্ম তারিখ: {{ date('d-m-Y', strtotime($workerinfo->dateofbirth)) }}</h4>
+                        <h4>বয়স: {{ date('Y')-date('Y', strtotime($workerinfo->dateofbirth)) }} বছর</h4>
+						<h4>রক্তের গ্রুপ: {{$workerinfo->bloodgroup}}</h4>
+						<h4>ফোন নাম্বারঃ {{$workerinfo->phone}}</h4>
+						<h4>ঠিকানাঃ {{$workerinfo->address}}</h4><br>
+						<h4 style="color:#428bca"><b>সর্বমোট পাওনাঃ {{$workerinfo->totaldue}} টাকা</b></h4>
+						<h4 style="color:#5cb85c"><b>সর্বমোট পরিশোধঃ {{$workerinfo->totalpaid}} টাকা</b></h4>
+						<h4 style="color:#d9534f"><b>অপরিশোধিত পাওনাঃ @if($workerinfo->totaldue>=1) {{$workerinfo->totaldue - $workerinfo->totalpaid}} @else {{0}} @endif টাকা</b></h4>
+					  </div>
+					</div>
+
+                    </div>
+                    <div class="col-md-4">
+                        <form class="form-horizontal" action="{{url('/')}}/workerpay/{{$workerinfo->id}}" method="post">
+                        {{ csrf_field() }}
+
+                        <div class="input-group">
+                          <span class="input-group-addon">৳</span>
+                          <input type="text" name="amount" class="form-control" aria-label="Amount" placeholder="0.00">
+                          <span class="input-group-btn">
+                            <button class="btn btn-success" type="submit">PAY</button>
+                          </span>
+                        </div>
+                        </form>
+                    </div>
+
+                </div>
+
+
+                   <div class="row">
+                    <div class="col-md-12">
+
+                    <div class="panel panel-success">
+					  <div class="panel-heading">সকল হাজিরা হিসাব</div>
+					  <div class="panel-body">
+						
+						<div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead class="salarysheet">
+                                    <tr>
+                                        <th rowspan="2" style="text-align:center; vertical-align: middle;">ক্রমিক নং</th>
+                                        <th rowspan="2" style="text-align:center; vertical-align: middle;">কর্ম পালা</th>
+                                        <th colspan="7" style="text-align:center;">সাপ্তাহিক হাজীরা</th>
+                                        <th rowspan="2" style="text-align:center; vertical-align: middle;">মোট কর্ম ঘন্টা</th>
+                                        <th rowspan="2" style="text-align:center; vertical-align: middle;">নির্ধারিত মজুরী</th>
+                                        <th rowspan="2" style="text-align:center; vertical-align: middle;">বোনাস</th>
+                                        <th rowspan="2" style="text-align:center; vertical-align: middle;">নাইট</th>
+                                        <th rowspan="2" style="text-align:center; vertical-align: middle;">শুক্রবার</th>
+                                        <th rowspan="2" style="text-align:center; vertical-align: middle;">মোট মজুরী</th>
+                                    </tr>
+                                    <tr>
+                                            <th>মঙ্গল</th>
+                                            <th>বুধ</th>
+                                            <th>বৃহঃ</th>
+                                            <th>শুক্র</th>
+                                            <th>শনি</th>
+                                            <th>রবি</th>
+                                            <th>সোম</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php($i=1)
+                                    @foreach($workerwages as $workerwage)
+                                    <tr>
+                                        <td>{{$i}}</td>
+                                        <td>{{$workerwage->shift}}</td>
+                                        <td>{{$workerwage->d1}}</td>
+                                        <td>{{$workerwage->d2}}</td>
+                                        <td>{{$workerwage->d3}}</td>
+                                        <td>{{$workerwage->d4}}</td>
+                                        <td>{{$workerwage->d5}}</td>
+                                        <td>{{$workerwage->d6}}</td>
+                                        <td>{{$workerwage->d7}}</td>
+                                        <td>{{$workerwage->totalhour}}</td>
+                                        <td>{{$workerwage->wages}}</td>
+                                        <td>{{$workerwage->bonus}}</td>
+                                        <td>{{$workerwage->night}}</td>
+                                        <td>{{$workerwage->friday}}</td>
+                                        <td>{{$workerwage->totalwages}}</td>
+                                    </tr>
+                                    @php($i++)
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            {{ $workerwages->links() }}
+                        </div>	
+
+					  </div> <!--  panel end -->
+					</div>
+
+                    </div>
+                </div>  <!-- row end -->
+
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <div class="panel panel-primary">
+                          <div class="panel-heading">টাকা পরিশোধ এর হিসাব</div>
+                          <div class="panel-body">
+                            
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <thead class="salarysheet">
+                                        <tr>
+                                            <th style="text-align:center; vertical-align: middle;">ক্রমিক নং</th>
+                                            <th style="text-align:center; vertical-align: middle;">তারিখ</th>
+                                            <th style="text-align:center;">টাকার পরিমান</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @php($i=1)
+                                        @foreach($payments as $payment)
+                                        <tr>
+                                            <td>{{$i}}</td>
+                                            <td>{{date('d-m-Y', strtotime($payment->created_at))}}</td>
+                                            <td>{{$payment->amount}}</td>
+
+                                        </tr>
+                                        @php($i++)
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                                {{ $payments->links() }}
+                            </div>  
+
+                          </div>
+                        </div>
+                    </div>
+                </div>
+                	             		
+                </div>
+                </div>
+
+    </div> <!-- /.container-fluid -->
+            
+@endsection
